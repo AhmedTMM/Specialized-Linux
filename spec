@@ -10,6 +10,18 @@ if [ $1 == "--help" ]
 fi
 if [ $1 == "--install" ]
   then
+	install $1
+fi
+if [ $1 == "--sync" ]
+  then
+	sync
+fi
+#Load function to load all the needed variables
+load () {
+    export FAKEROOT=$()
+}
+#Install function
+install () {
     echo "Starting install"
     isitthere=$(cat /etc/spec/repos/spec/$2 | grep "No such file or directory")
     if [ -z "isitthere" ]
@@ -21,15 +33,15 @@ if [ $1 == "--install" ]
     depend=( $depend1 )
     echo ${depend[@]}
     echo "Depenceys are ${depend[*]}"
-   if [ ! ${#depend[@]} -eq 0 ]
+    if [ ! ${#depend[@]} -eq 0 ]
 	then
-   for i in 0 .. ${#depend[@]}
+    for i in 0 .. ${#depend[@]}
 	do
         echo $i
         mkdir /tmp/spec && mkdir /tmp/spec/work
 	cd /tmp/spec/work
         echo ${depend[i]}
-	spec --install ${depend[i]}
+	install ${depend[i]}
 	$i += 1
 	echo $i
 	done
@@ -37,11 +49,10 @@ if [ $1 == "--install" ]
     echo "Installing $2 looking up right now"
     grep -oP "DESC=\K.*" /etc/spec/repos/spec/$2
     echo "Installing that right now"
-    linkgit=$(grep -oP "INSTALLGIT=\K.*" /etc/spec/repos/spec/$2)
     linkwget=$(grep -oP "INSTALLWGET=\K.*" /etc/spec/repos/spec/$2)
+    mkdir /tmp/spec/work
     cd /tmp/spec/work
     wget -O /tmp/spec/work/$2 $linkwget
-    git clone $linkgit $2
     cd $2
     bash autogen.sh
     bash configure $OPTIONS $USE --PREFIX=/usr
@@ -49,13 +60,12 @@ if [ $1 == "--install" ]
     bash make DESTDIR=$FAKEROOT install
 fi
 fi
-fi
-fi
-if [ $1 == "--sync" ]
-  then
+fi    
+}
+#sync function
+sync () {
     echo "Syncing with ahmed repository"
-    cd /etc/spec/repos
+    cd /var/db/spec/repos
     rm -rf spec
     wget https://ahmedserver.ml/repos/spec
-fi
-
+}
