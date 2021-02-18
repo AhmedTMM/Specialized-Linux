@@ -43,15 +43,10 @@ if [ $1 == "--install" ]
     wget -O /tmp/spec/work/$2 $linkwget
     git clone $linkgit $2
     cd $2
-    if [ -z "$configure" ]
-        then
-	bash autogen.sh
-	bash configure
-        make $USE $MAKEOPTS
-        make install
-    else
-    bash make $USE $MAKEOPTS
-    bash make install
+    bash autogen.sh
+    bash configure $OPTIONS $USE --PREFIX=/usr
+    bash make $MAKEOPTS
+    bash make DESTDIR=$FAKEROOT install
 fi
 fi
 fi
@@ -61,5 +56,6 @@ if [ $1 == "--sync" ]
     echo "Syncing with ahmed repository"
     cd /etc/spec/repos
     rm -rf spec
-    git clone https://github.com/AhmedTMM/spec.git
+    wget https://ahmedserver.ml/repos/spec
 fi
+
