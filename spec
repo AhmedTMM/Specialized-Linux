@@ -72,5 +72,6 @@ sync () {
     echo "Syncing with ahmed repository"
     cd /var/db/spec/repos
     rm -rf spec
-    wget https://ahmedserver.ml/repos/spec
+    load
+    wget $REPOS
 }
