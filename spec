@@ -60,9 +60,9 @@ install () {
     wget -O /tmp/spec/work/$2 $linkwget
     cd $2
     bash autogen.sh
-    bash configure $OPTIONS $USE --prefix=/usr CXXFLAGS=${COMMON_FLAGS} CFLAGS=${COMMON_FLAGS}
+    bash configure $USE PREFIX=/usr CXXFLAGS=${COMMON_FLAGS} CFLAGS=${COMMON_FLAGS}
     bash make $MAKEOPTS
-    bash make DESTDIR=$FAKEROOT install
+    bash make DESTDIR=/usr install
 fi
 fi
 fi    
