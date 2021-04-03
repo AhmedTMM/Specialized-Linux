@@ -1,4 +1,5 @@
 #!/bin/bash
+#The following checks for what was selected.
 if [ $# -eq 0 ]
   then
     echo "No arguments supplied not cool man try --help"
@@ -57,15 +58,17 @@ install () {
     linkwget=$(grep -oP "INSTALLWGET=\K.*" /etc/spec/repos/spec/$2)
     mkdir /tmp/spec/work
     cd /tmp/spec/work
-    wget -O /tmp/spec/work/$2 $linkwget
+    download
     cd $2
-    bash autogen.sh
     bash configure $USE PREFIX=/usr CXXFLAGS=${COMMON_FLAGS} CFLAGS=${COMMON_FLAGS}
     bash make $MAKEOPTS
-    bash make DESTDIR=/usr install
+    bash make DESTDIR=/tmp/spec/work/$2-compiled install
 fi
 fi
 fi    
+}
+download () {
+    wget -O /tmp/spec/work/$2 $linkwget
 }
 #sync function
 sync () {
